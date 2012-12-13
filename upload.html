@@ -1,0 +1,85 @@
+<html>
+<head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.js"></script>
+<script>
+	var NEXT_CLASS = 2;
+	var NEXT_SUB_HEAD = 1;
+	
+	function add_contents(){
+		var classCount = $(".toc").length;
+		var nextClassNum = classCount + NEXT_CLASS;
+		var nextClass = $(".first_toc").clone(true).empty();
+		nextClass.attr("class", "toc");
+		nextClass.append('section:<input class="toc_section" type="text" name="c' + nextClassNum + '">');
+		nextClass.append('<input type="button" value="add" class="add_sub_head"><br>');
+		nextClass.appendTo(".table_of_contents");
+		//alert(nextClassNum);
+	}
+	
+	function add_body(){
+		var classCount = $(".body").length;
+		var nextClassNum = classCount + NEXT_CLASS;
+		var nextClass = $(".first_body").clone(true).empty();
+		nextClass.attr("class", "body");
+		nextClass.append('section:<input class="body_section" type="text" name="name_b' + nextClassNum + '"><br>');
+		nextClass.append('<textarea name="b' + nextClassNum + '" cols=40 rows=4></textarea><br>');
+		nextClass.append('<input type="button" value="add" class="add_sub_head"><br>');
+		nextClass.appendTo(".body_all");
+	}
+	//　上二つは同じ処理なので、引数を渡す形にして一つにする予定
+	
+	$(document).ready(function(){
+		
+		$(".add_sub_head").live('click', function(){
+			var belong = $(this).parent().attr("class");
+			if(belong.match(/toc/i)){
+				var currentSection = $(this).parent().children(".toc_section").attr("name");
+				var nextSubHead = $(this).parent().children(".sub_head").length + NEXT_SUB_HEAD;
+				var parent = $(this).parent();
+				parent.append('sub section:<input type="text" name="' + currentSection + '_' + nextSubHead + '" class="sub_head"><br>');
+			}else{
+				var currentSection = $(this).parent().children(".body_section").attr("name");
+				currentSection = currentSection.split("_");
+				currentSection = currentSection[1];
+				var nextSubHead = $(this).parent().children(".sub_head").length + NEXT_SUB_HEAD;
+				var parent = $(this).parent();
+				parent.append('sub section:<input type="text" name="name_' + currentSection + '_' + nextSubHead + '" class="sub_head"><br>');
+				parent.append('<textarea name="' + currentSection + '.' + nextSubHead + '" cols=40 rows=4></textarea><br>');
+			}
+			//alert(belong);
+		});
+		
+	});
+	
+</script>
+</head>
+<body>
+	*You can't remove input element that you once added but refresh this page, so you must do it carefully.
+	<form method="post" action="upload.php">
+	<input type="submit" value="submit">
+		<fieldset>
+			name:<input type="text" name="author_name">
+			title:<input type="text" name="title">
+		</fieldset>
+		<fieldset class="table_of_contents">
+			table of contants<input type="button" value="add" onclick="add_contents()"><br>
+			<fieldset class="toc, first_toc">
+				section:<input class="toc_section" type="text" name="c1">
+				<input type="button" value="add" class="add_sub_head"><br>
+			</fieldset>
+		</fieldset>
+		<fieldset class="body_all">
+			body<input type="button" value="add" onclick="add_body()"><br>
+			<fieldset class="body, first_body">
+				section:<input class="body_section" type="text" name="name_b1"><br>
+				<textarea name="b1" cols=40 rows=4></textarea><br>
+				<input type="button" value="add" class="add_sub_head"><br>
+				<!--
+				sub section:<input type="text" name="b1.1"><br>
+				<textarea name="b1" cols=40 rows=4></textarea><br>
+				-->
+			</fieldset>
+		</fieldset>
+	</form>
+</body>
+</html>
